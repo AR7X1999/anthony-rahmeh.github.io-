@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anthony Rahmeh Accounting Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a ruled ledger page. Red margin rule on the left, entries numbered like journal entries, figures in mono. */
+:root{
+  --paper:#f3f6f1;
+  --sheet:#fbfcfa;
+  --ink:#14233b;
+  --muted:#5b6878;
+  --rule:#cfd9d0;
+  --green:#1f6b4c;
+  --margin:#b8432f;
+  --display:"Archivo","Arial Narrow",Arial,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0e1726;--sheet:#142033;--ink:#e8eef2;--muted:#96a4b4;--rule:#26364d;--green:#5cc79a;--margin:#e2705b;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0e1726;--sheet:#142033;--ink:#e8eef2;--muted:#96a4b4;--rule:#26364d;--green:#5cc79a;--margin:#e2705b;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6}
+a{color:inherit}
+a:focus-visible,button:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+.page{max-width:1040px;margin:0 auto;padding:0 20px 0 34px;position:relative}
+.page::before{content:"";position:absolute;top:0;bottom:0;left:16px;width:2px;background:var(--margin);opacity:.55}
+@media (min-width:720px){.page{padding:0 40px 0 72px}.page::before{left:44px}}
+
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 24px;padding:18px 0;border-bottom:1px solid var(--rule)}
+.mark{font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:.02em;text-decoration:none;border:2px solid var(--ink);padding:2px 9px}
+nav{display:flex;flex-wrap:wrap;gap:6px 18px;font-family:var(--mono);font-size:13px}
+nav a{text-decoration:none;color:var(--muted)}
+nav a:hover{color:var(--ink)}
+nav a.open{color:var(--green);font-weight:600}
+nav a.open::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px}
+
+.hero{display:grid;gap:32px;padding:48px 0 40px;align-items:end}
+@media (min-width:860px){.hero{grid-template-columns:1.25fr 1fr;padding:72px 0 56px}}
+.eyebrow{font-family:var(--mono);font-size:13px;color:var(--green);letter-spacing:.06em;text-transform:uppercase;margin:0 0 14px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(44px,9vw,84px);line-height:.95;letter-spacing:-.02em;margin:0;text-wrap:balance}
+h1 span{color:var(--green)}
+.tag{font-size:18px;color:var(--muted);margin:18px 0 26px;max-width:46ch}
+.btns{display:flex;flex-wrap:wrap;gap:12px}
+.btn{font-family:var(--mono);font-size:14px;font-weight:500;text-decoration:none;padding:11px 18px;border:2px solid var(--ink)}
+.btn.solid{background:var(--ink);color:var(--paper)}
+.btn:hover{border-color:var(--green)}
+.btn.solid:hover{background:var(--green);color:var(--sheet)}
+
+.ledger{background:var(--sheet);border:1px solid var(--rule);font-family:var(--mono);font-size:13.5px}
+.ledger .cap{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:2px solid var(--ink);font-weight:600}
+.ledger dl{margin:0}
+.ledger .row{display:grid;grid-template-columns:104px 1fr;gap:12px;padding:9px 14px;border-bottom:1px solid var(--rule)}
+.ledger dt{color:var(--muted)}
+.ledger dd{margin:0}
+.ledger .foot{padding:10px 14px;color:var(--green);font-weight:600}
+
+.stats{display:grid;grid-template-columns:repeat(2,1fr);border-top:2px solid var(--ink);border-bottom:1px solid var(--rule)}
+@media (min-width:720px){.stats{grid-template-columns:repeat(4,1fr)}}
+.stat{padding:22px 14px 20px 0}
+.stat b{display:block;font-family:var(--display);font-weight:800;font-size:40px;line-height:1;font-variant-numeric:tabular-nums}
+.stat span{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+
+section{padding:56px 0 8px}
+.sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:26px}
+.sec-head .no{font-family:var(--mono);font-size:13px;color:var(--margin)}
+h2{font-family:var(--display);font-weight:800;font-size:clamp(28px,5vw,40px);line-height:1.05;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h3{font-family:var(--display);font-weight:700;font-size:20px;margin:0 0 6px;line-height:1.2;text-wrap:balance}
+
+.cases{display:grid;gap:18px}
+.case{background:var(--sheet);border:1px solid var(--rule);border-top:3px solid var(--green);padding:20px}
+.case .id{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-bottom:10px}
+.pill{border:1px solid var(--green);color:var(--green);padding:1px 8px;font-weight:600}
+.case dl{display:grid;gap:10px;margin:14px 0 0}
+.case .line{display:grid;gap:2px 16px}
+@media (min-width:640px){.case .line{grid-template-columns:90px 1fr}}
+.case dt{font-family:var(--mono);font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--margin);padding-top:3px}
+.case dd{margin:0;max-width:65ch}
+
+.cols{display:grid;gap:18px}
+@media (min-width:760px){.cols{grid-template-columns:repeat(3,1fr)}}
+.col{border-top:2px solid var(--ink);padding-top:14px}
+.col ul{list-style:none;margin:10px 0 0;padding:0}
+.col li{padding:7px 0;border-bottom:1px solid var(--rule)}
+.note{font-family:var(--mono);font-size:13px;color:var(--muted);margin-top:18px;max-width:70ch}
+
+.steps{display:grid;gap:18px;counter-reset:s}
+@media (min-width:760px){.steps{grid-template-columns:repeat(4,1fr)}}
+.step{counter-increment:s;border-left:2px solid var(--green);padding-left:14px}
+.step::before{content:"0" counter(s);font-family:var(--mono);font-size:13px;color:var(--green);font-weight:600}
+.step p{margin:4px 0 0;color:var(--muted);font-size:15px}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-family:var(--mono);font-size:13.5px;border:1px solid var(--rule);background:var(--sheet);padding:6px 12px}
+.chip.main{border-color:var(--green);color:var(--green);font-weight:600}
+
+.timeline{display:grid}
+.job{display:grid;gap:4px 24px;padding:20px 0;border-top:1px solid var(--rule)}
+@media (min-width:720px){.job{grid-template-columns:200px 1fr}}
+.job .when{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.job .when b{display:block;color:var(--green);font-weight:600}
+.job p{margin:6px 0 0;color:var(--muted);max-width:65ch}
+.job .co{font-family:var(--mono);font-size:13.5px}
+
+.two{display:grid;gap:32px}
+@media (min-width:760px){.two{grid-template-columns:1.3fr 1fr}}
+.list{list-style:none;margin:0;padding:0}
+.list li{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-top:1px solid var(--rule)}
+.list li span:last-child{font-family:var(--mono);font-size:13px;color:var(--muted);text-align:right}
+
+.contact{background:var(--sheet);border:1px solid var(--rule);border-top:3px solid var(--ink)}
+.crow{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;padding:16px 18px;border-bottom:1px solid var(--rule)}
+.crow:last-child{border-bottom:0}
+.crow small{display:block;font-family:var(--mono);font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.crow a{font-family:var(--mono);font-size:15px;word-break:break-all}
+.copy{font-family:var(--mono);font-size:13px;background:none;color:var(--ink);border:1px solid var(--ink);padding:6px 12px;cursor:pointer}
+.copy:hover{border-color:var(--green);color:var(--green)}
+footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;font-family:var(--mono);font-size:12.5px;color:var(--muted);padding:28px 0 36px;margin-top:56px;border-top:2px solid var(--ink)}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <a class="mark" href="#top" aria-label="Anthony Rahmeh, top of page">AR</a>
+  <nav aria-label="Sections">
+    <a href="#work">Work</a>
+    <a href="#services">Services</a>
+    <a href="#method">Method</a>
+    <a href="#experience">Experience</a>
+    <a class="open" href="#contact">Available</a>
+  </nav>
+</header>
+
+<main id="top">
+<div class="hero">
+  <div>
+    <p class="eyebrow">Senior Accountant &amp; Financial Analyst</p>
+    <h1>Anthony<br>Rahmeh<span>.</span></h1>
+    <p class="tag">Accounting services for companies that want clean books, declarations filed on time and a P&amp;L they can trust.</p>
+    <div class="btns">
+      <a class="btn solid" href="#work">See my work</a>
+      <a class="btn" href="#contact">Get in touch</a>
+    </div>
+  </div>
+  <div class="ledger" aria-label="Profile summary">
+    <div class="cap"><span>general.ledger</span><span>A. Rahmeh</span></div>
+    <dl>
+      <div class="row"><dt>Role</dt><dd>Senior Accountant &amp; Financial Analyst</dd></div>
+      <div class="row"><dt>Freelance</dt><dd>Taking clients</dd></div>
+      <div class="row"><dt>Experience</dt><dd>7+ years in accounting</dd></div>
+      <div class="row"><dt>Location</dt><dd>Zouk Mosbeh, Lebanon</dd></div>
+      <div class="row"><dt>Local time</dt><dd id="clock">Beirut time</dd></div>
+      <div class="row"><dt>Systems</dt><dd>QuickBooks, Odoo, Excel</dd></div>
+    </dl>
+    <div class="foot">Books balanced. Open for new work.</div>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat"><b>7+</b><span>years in accounting</span></div>
+  <div class="stat"><b>5</b><span>roles, junior to senior</span></div>
+  <div class="stat"><b>2</b><span>declarations: VAT and CNSS</span></div>
+  <div class="stat"><b>3</b><span>languages, all fluent</span></div>
+</div>
+
+<section id="work">
+  <div class="sec-head"><span class="no">01</span><h2>Journal entries</h2></div>
+  <div class="cases">
+    <article class="case">
+      <div class="id"><span>JE-01 · Freelance · Private company, Lebanon</span><span class="pill">In progress</span></div>
+      <h3>Year-end audit and payment reconciliation</h3>
+      <dl>
+        <div class="line"><dt>Need</dt><dd>The company wants a year-end P&amp;L that reflects what really happened, with every payment matched to the right terms.</dd></div>
+        <div class="line"><dt>Work</dt><dd>As senior accountant alongside the finance manager, I audit and reconcile all payments against the books and correct what does not match.</dd></div>
+        <div class="line"><dt>Aim</dt><dd>A real, accurate P&amp;L at the end of the year.</dd></div>
+      </dl>
+    </article>
+    <article class="case">
+      <div class="id"><span>JE-02 · Spiced &amp; Sliced</span><span class="pill">Closed</span></div>
+      <h3>Daily sales and waste reporting to the CEO</h3>
+      <dl>
+        <div class="line"><dt>Need</dt><dd>Management needed to see sales and waste every day, not at month end.</dd></div>
+        <div class="line"><dt>Work</dt><dd>Ran the full accounting cycle: data entry, sales, purchases, expenses, AP, cash keeping and supplier payments.</dd></div>
+        <div class="line"><dt>Output</dt><dd>A daily consolidated sales report and a daily waste report sent to the CEO.</dd></div>
+      </dl>
+    </article>
+    <article class="case">
+      <div class="id"><span>JE-03 · Heavy equipment dealership</span><span class="pill">Ongoing</span></div>
+      <h3>Technician data, invoicing and service reporting</h3>
+      <dl>
+        <div class="line"><dt>Need</dt><dd>Accurate figures for every technician, shared between service, payroll and procurement.</dd></div>
+        <div class="line"><dt>Work</dt><dd>Invoicing and data entry for technicians with the payroll department, quality control, and tracking parts and external invoices with procurement on the company's internal system.</dd></div>
+        <div class="line"><dt>Output</dt><dd>A monthly report to the service manager.</dd></div>
+      </dl>
+    </article>
+  </div>
+</section>
+
+<section id="services">
+  <div class="sec-head"><span class="no">02</span><h2>Services</h2></div>
+  <div class="cols">
+    <div class="col">
+      <h3>Bookkeeping</h3>
+      <ul>
+        <li>Data entry</li>
+        <li>Invoicing</li>
+        <li>Accounts payable</li>
+        <li>Accounts receivable and aging</li>
+        <li>Bank entries and reconciliation</li>
+      </ul>
+    </div>
+    <div class="col">
+      <h3>Declarations</h3>
+      <ul>
+        <li>VAT declaration</li>
+        <li>CNSS declaration</li>
+        <li>Audit preparation</li>
+        <li>Payment audit and reconciliation</li>
+      </ul>
+    </div>
+    <div class="col">
+      <h3>Reporting and analysis</h3>
+      <ul>
+        <li>Profit and loss</li>
+        <li>Trial balance</li>
+        <li>Financial statements</li>
+        <li>Cost analysis</li>
+        <li>Management reports</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note">Work is done on QuickBooks (preferred) or Odoo. A QuickBooks subscription is an extra charge.</p>
+</section>
+
+<section id="method">
+  <div class="sec-head"><span class="no">03</span><h2>Method</h2></div>
+  <div class="steps">
+    <div class="step"><h3>Record</h3><p>Every invoice, payment and expense goes into the system with its document.</p></div>
+    <div class="step"><h3>Reconcile</h3><p>Banks, suppliers and customers are matched against the books.</p></div>
+    <div class="step"><h3>Report</h3><p>Trial balance, P&amp;L and the reports management asked for.</p></div>
+    <div class="step"><h3>Review</h3><p>Figures are checked again before declarations and year end.</p></div>
+  </div>
+</section>
+
+<section id="toolkit">
+  <div class="sec-head"><span class="no">04</span><h2>Toolkit</h2></div>
+  <div class="chips">
+    <span class="chip main">QuickBooks</span>
+    <span class="chip">Odoo</span>
+    <span class="chip">Excel</span>
+    <span class="chip">ERP systems</span>
+    <span class="chip">Shopify</span>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="sec-head"><span class="no">05</span><h2>Experience</h2></div>
+  <div class="timeline">
+    <div class="job">
+      <div class="when"><b>Now</b>Freelance</div>
+      <div><h3>Senior Accountant</h3><div class="co">Private company, Lebanon</div><p>Audit and reconciliation of all payments with the finance manager, to close the year with an accurate P&amp;L.</p></div>
+    </div>
+    <div class="job">
+      <div class="when"><b>2.5 years</b>Current, full time</div>
+      <div><h3>Senior Accountant &amp; Financial Analyst</h3><div class="co">Heavy equipment dealership, Lebanon</div><p>Started as data controller in operations. Invoicing and technician data entry with payroll, quality control, a monthly report to the service manager, and parts and external invoices with procurement on the internal system.</p></div>
+    </div>
+    <div class="job">
+      <div class="when"><b>3 years</b>Full time</div>
+      <div><h3>Senior Accounts Analyst</h3><div class="co">Facilitate</div><p>Quarterly cost report, work with the night auditor, invoicing, customer portals, emailing, aging, reconciliation and bank entries.</p></div>
+    </div>
+    <div class="job">
+      <div class="when"><b>6 months</b>Full time</div>
+      <div><h3>Accountant</h3><div class="co">Spiced &amp; Sliced</div><p>Data entry, sales, purchases, expenses, AP, cash keeping and supplier payments. Daily consolidated sales report and daily waste report to the CEO.</p></div>
+    </div>
+    <div class="job">
+      <div class="when"><b>1.5 years</b>First role</div>
+      <div><h3>Junior Accountant</h3><div class="co">Hasbani, auditing and accounting</div><p>Started in an audit and accounting office.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="education">
+  <div class="two">
+    <div>
+      <div class="sec-head"><span class="no">06</span><h2>Education</h2></div>
+      <ul class="list">
+        <li><span>Licence Technique (LT), bachelor's degree</span><span>IPNET, Dekwaneh</span></li>
+        <li><span>Technicien Supérieur (TS1, TS2)</span><span>Ajaltoun</span></li>
+        <li><span>Law studies, two years</span><span>Lebanese University</span></li>
+      </ul>
+    </div>
+    <div>
+      <div class="sec-head"><span class="no">07</span><h2>Languages</h2></div>
+      <ul class="list">
+        <li><span>Arabic</span><span>Native</span></li>
+        <li><span>English</span><span>Fluent</span></li>
+        <li><span>French</span><span>Fluent</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="sec-head"><span class="no">08</span><h2>Open an account</h2></div>
+  <div class="contact">
+    <div class="crow">
+      <div><small>Email</small><a href="mailto:anthorahme77@gmail.com">anthorahme77@gmail.com</a></div>
+      <button class="copy" type="button" data-copy="anthorahme77@gmail.com">Copy</button>
+    </div>
+    <div class="crow">
+      <div><small>Phone / WhatsApp</small><a href="https://wa.me/96171041412">+961 71 041 412</a></div>
+      <button class="copy" type="button" data-copy="+96171041412">Copy</button>
+    </div>
+    <div class="crow">
+      <div><small>LinkedIn</small><a href="https://www.linkedin.com/in/mtanios-anthony-rahmeh-360198226">linkedin.com/in/mtanios-anthony-rahmeh-360198226</a></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <span>Anthony Rahmeh · Zouk Mosbeh, Lebanon</span>
+  <span id="clock2">Beirut time</span>
+</footer>
+
+</div>
+<script>
+(function(){
+  function tick(){
+    var t;
+    try{
+      t=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Beirut',hour:'2-digit',minute:'2-digit'}).format(new Date())+' Beirut';
+    }catch(e){t='Beirut time'}
+    document.getElementById('clock').textContent=t;
+    document.getElementById('clock2').textContent=t;
+  }
+  tick();setInterval(tick,30000);
+  document.querySelectorAll('.copy').forEach(function(b){
+    b.addEventListener('click',function(){
+      var done=function(){b.textContent='Copied';setTimeout(function(){b.textContent='Copy'},1500)};
+      try{navigator.clipboard.writeText(b.dataset.copy).then(done,function(){b.textContent='Select and copy'})}
+      catch(e){b.textContent='Select and copy'}
+    });
+  });
+})();
+</script>
+</body>
+</html>
